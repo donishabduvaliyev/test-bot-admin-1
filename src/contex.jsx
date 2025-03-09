@@ -14,8 +14,10 @@ export const ItemsContext = ({ children }) => {
     const fetchFoodItems = async () => {
         try {
             const response = await getFoodItems();
+            console.log(response.data);
             
             setItems(response.data);
+            
         } catch (error) {
             console.error("Error fetching food items:", error);
         }
@@ -27,7 +29,7 @@ export const ItemsContext = ({ children }) => {
 
 
     return (
-        <createItemsContext.Provider value={{ items }} >
+        <createItemsContext.Provider value={{ items , setItems }} >
             {children}
         </createItemsContext.Provider>
     )

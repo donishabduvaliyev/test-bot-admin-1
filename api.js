@@ -17,3 +17,6 @@ export const updateFoodItem = async (id, updatedData) => {
 export const deleteFoodItem = async (id) => {
   return await axios.delete(`${API_URL}/food/delete/${id}`);
 };
+
+
+
