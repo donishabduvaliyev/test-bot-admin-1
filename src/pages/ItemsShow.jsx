@@ -17,28 +17,26 @@ function ItemsShow() {
   const handleSearch = (e) => {
     setSearchTerm(e.target.value.toLowerCase());
   };
-  const handleEditClick = (section, item) => {
+  const handleEditClick = (item) => {
     if (!item._id) {
       console.error("❌ Item does not have a valid MongoDB _id", item);
       return;
     }
-
-    setSelectedItem({
-      ...item,
-      sectionId: section._id // Ensure the section ID is included
-    });
+    setSelectedItem(item)
   };
 
 
 
 
   const handleSaveChanges = async (id, updatedData) => {
+    console.log(selectedItem);
+
     try {
       if (!selectedItem?._id) {
         console.error("❌ Food item does not have a valid MongoDB _id", selectedItem);
         return;
       }
-      const response = await fetch(`http://localhost:5000/api/food/${selectedItem._id}`,  {  // ✅ Use _id
+      const response = await fetch(`http://localhost:5000/api/food/${selectedItem._id}`, {  // ✅ Use _id
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -53,18 +51,32 @@ function ItemsShow() {
       const updatedItem = await response.json();
 
       // Update frontend state
+      // setItems((prevItems) =>
+      //   prevItems.items.map((ooo) =>
+      //     ooo._id === selectedItem._id
+      //       ? {
+      //         ...category,
+      //         items: category.items.map((item) =>
+      //           item._id === selectedItem._id ? { ...item, ...updatedItem.food } : item
+      //         ),
+      //       }
+      //       : category
+      //   )
+      // );
+
+
       setItems((prevItems) =>
-        prevItems.map((category) =>
-          category._id === selectedItem.sectionId
-            ? {
-              ...category,
-              items: category.items.map((item) =>
-                item._id === selectedItem._id ? { ...item, ...updatedItem.food } : item
-              ),
-            }
-            : category
+        prevItems.items.map((item) =>
+          item._id === selectedItem._id ? {
+            ...items,
+            items: items.items.map((item) => {
+              item._id === selectedItem._id ? { ...item, ...updatedItem.food } : item
+            })
+          } :
+            items
         )
-      );
+      )
+
 
       setSelectedItem(null);
     } catch (error) {
@@ -102,7 +114,7 @@ function ItemsShow() {
                         </div>
                         <h1 className="text-white">{foodItem.name}</h1>
                         <h2 className="text-gray-300">${foodItem.price}</h2>
-                        <button className="cursor-pointer bg-sky-500 w-full rounded-2xl text-white py-1" onClick={() => handleEditClick(category, foodItem)}>
+                        <button className="cursor-pointer bg-sky-500 w-full rounded-2xl text-white py-1" onClick={() => handleEditClick(foodItem)}>
                           o'zgartirish
                         </button>
                       </div>

@@ -4,7 +4,7 @@ import uploadImageToImgBB from "../imgbb"; // ImgBB upload function
 function EditItem({ item, onSave, onCancel, categories }) {
     const [editedData, setEditedData] = useState({
         name: item.name,
-        imageUrl: item.image, // Store image URL
+        image: item.image, // Store image URL
         category: item.category,
         price: item.price,
         size: item.size || "",
@@ -55,11 +55,14 @@ function EditItem({ item, onSave, onCancel, categories }) {
             const response = await fetch("http://localhost:5000/api/food/upload", {
                 method: "POST",
                 body: formData,
+
             });
 
             const data = await response.json();
             if (response.ok) {
-                setEditedData({ ...editedData, imageUrl: data.imageUrl });
+                console.log(data);
+                
+                setEditedData({ ...editedData, image: data.image });
             } else {
                 console.error("Image upload failed:", data.message);
             }
