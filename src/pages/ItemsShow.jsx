@@ -63,19 +63,18 @@ function ItemsShow() {
       //       : category
       //   )
       // );
+      console.log('mavjud itemlar', items);
 
 
       setItems((prevItems) =>
-        prevItems.items.map((item) =>
-          item._id === selectedItem._id ? {
-            ...items,
-            items: items.items.map((item) => {
-              item._id === selectedItem._id ? { ...item, ...updatedItem.food } : item
-            })
-          } :
-            items
-        )
-      )
+        prevItems.map((category) => ({
+          ...category,
+          items: category.items.map((item) =>
+            item._id === selectedItem._id ? { ...item, ...updatedItem.food } : item
+          ),
+        }))
+      );
+      
 
 
       setSelectedItem(null);
