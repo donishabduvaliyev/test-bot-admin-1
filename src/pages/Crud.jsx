@@ -1,44 +1,248 @@
-import React from 'react'
+import React, { useState } from 'react';
+import { useCart } from '../contex';
+import { Box, TextField, Button, Card, CardContent, Grid, FormControl, InputLabel, Select, MenuItem, Checkbox, FormControlLabel, Typography } from "@mui/material";
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 
-function Crud() {
+function Crud() {  // Accept `categories` as a prop
+  const [newItem, setNewItem] = useState({
+    name: '',
+    image: '',
+    category: '',
+    price: '',
+    isAviable: false,
+    sizes: '',
+    toppings: [],
+  });
+
+  const { items, setitems , backEndUrl } = useCart()
+  const [newTopping, setNewTopping] = useState("");
+  const [newToppingPrice, setNewToppingPrice] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+  const categories = ["Pizza", "Burger", "Drinks", "Desserts", "Other", "Combo"];
+
+
+
+  const handleChange = (e) => {
+    setNewItem({ ...newItem, [e.target.name]: e.target.value });
+  };
+
+  const handleCategoryChange = (e) => {
+    setNewItem({ ...newItem, category: e.target.value, toppings: [] });
+  };
+
+  const handleAddTopping = () => {
+    if (newTopping.trim() !== "" && newToppingPrice !== "") {
+      setNewItem({
+        ...newItem,
+        toppings: [...newItem.toppings, { name: newTopping, price: parseFloat(newToppingPrice) }]
+      });
+      setNewTopping("");
+      setNewToppingPrice("");
+    }
+  };
+
+  const handleRemoveTopping = (index) => {
+    setNewItem({
+      ...newItem,
+      toppings: newItem.toppings.filter((_, i) => i !== index),
+    });
+  };
+
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    setIsUploading(true);
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const response = await fetch(`${backEndUrl}/food/upload`, {
+        method: "POST",
+        body: formData,
+
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log(data);
+
+        setNewItem({ ...newItem, image: data.image });
+      } else {
+        console.error("Image upload failed:", data.message);
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    console.log(newItem);
+
+
+    if (!newItem.name || !newItem.price || !newItem.category || !newItem.image) {
+      alert("Please fill all required fields and upload an image.");
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      const foodData = {
+        name: newItem.name,
+        price: newItem.price,
+        category: newItem.category,
+        sizes: newItem.sizes || [], // Ensure it's an array
+        toppings: newItem.toppings || [], // Ensure it's an array
+        image: newItem.image, // Cloudinary URL
+        isAvailable: newItem.isAviable
+      };
+
+      console.log("Sending Data:", foodData); // 🔥 Debugging
+
+      const response = await fetch("http://localhost:5000/api/food/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }, // ✅ Set JSON headers
+        body: JSON.stringify(foodData), // ✅ Convert object to JSON string
+      });
+
+      const data = await response.json();
+      console.log(data);
+
+      if (!response.ok) throw new Error(data.message || "Failed to add food item.");
+
+      alert("Food item added successfully!");
+      setNewItem({ name: "", price: "", section: "", sizes: [], toppings: [], image: "" });
+
+    } catch (error) {
+      console.error("Error adding food:", error);
+      alert("Failed to add food item.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const onCancel = () => {
+    setNewItem({
+      name: '',
+      image: '',
+      category: '',
+      price: '',
+      isAviable: '',
+      sizes: '',
+      toppings: [],
+    });
+  };
+
   return (
-    <>
-      <div className=' bg-gray-600  w-[100vw] h-[92.9vh]  flex flex-col items-center gap-10  '>
-        <h1 className='text-4xl'>Mahsulot yarating</h1>
-        <div className=''>
-          <form action="">
-            <div >
-              <label htmlFor="">Mahsulot nomi</label>
-              <input type="text" id='name' className='w-[40vw] bg-amber-500' value={{}} />
-            </div>
-            <div>
-              <label htmlFor="">Mahsulot narxi</label>
-              <input type="number" id='price' className='w-[40vw] bg-amber-500' />
-            </div>
-            <div>
-              <select name="" id="">
-          
+    <Card sx={{ maxWidth: 500, mx: "auto", my: 4, bgcolor: "#374151", color: "white", boxShadow: 3, borderRadius: 2 }}
+   
+    >
+      <CardContent sx={{ maxHeight: "500px", overflowY: "auto", paddingBottom: 2 }}>
+        <Typography variant="h5" align="center" fontWeight="bold" gutterBottom>
+          Mahsulot qo'shish
+        </Typography>
 
-              </select>
-            </div>
+        <Box component="form" noValidate autoComplete="off">
+          <Grid container spacing={2}>
+            {/* Name Input */}
+            <Grid item xs={12}>
+              <TextField fullWidth label="Mahsulot nomi" variant="outlined" name="name" value={newItem.name} onChange={handleChange} sx={{ bgcolor: "white", borderRadius: 1 }} />
+            </Grid>
 
+            {/* Image Upload */}
+            <Grid item xs={10} className="flex flex-col items-center">
+              <label htmlFor="upload-file">
+                <Button variant="contained" component="span" sx={{ bgcolor: "primary.main", display: "flex", alignItems: "center", gap: 1 }}>
+                  <AddPhotoAlternateIcon />
+                  Rasm yuklash
+                </Button>
+              </label>
+              <input type="file" accept="image/*" id="upload-file" hidden onChange={handleImageUpload} />
 
-            <div>
-              <label htmlFor=""></label>
-              <input type="text" />
-            </div>
-            <div>
-              <label htmlFor=""></label>
-              <input type="text" />
-            </div>
+              {newItem.image && (
+                <img src={newItem.image} alt="rasm" className="w-40 h-40 mt-2 object-cover rounded-lg" />
+              )}
+            </Grid>
 
-          </form>
+            {/* Category Selection */}
+            <Grid item xs={12}>
+              <FormControl fullWidth sx={{ bgcolor: "white", borderRadius: 1 }}>
+                <InputLabel>Kategoriya</InputLabel>
+                <Select name="Kategoriya" value={newItem.category} onChange={handleCategoryChange}>
+                  {categories.map((cat) => (
+                    <MenuItem key={cat} value={cat}>
+                      {cat}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
 
+            {/* Pizza: Size Input */}
+            {newItem.category === "Pizza" && (
+              <Grid item xs={12}>
+                <TextField fullWidth label="O'lcham" variant="outlined" name="sizes" value={newItem.sizes} onChange={handleChange} placeholder="Enter pizza size (e.g., Small, Medium, Large)" sx={{ bgcolor: "white", borderRadius: 1 }} />
+              </Grid>
+            )}
 
-        </div>
-      </div>
-    </>
-  )
+            {/* Combo: Toppings Input */}
+            {newItem.category === "Combo" && (
+              <>
+                <Grid item xs={6}>
+                  <TextField fullWidth label="qo'shimcha" variant="outlined" value={newTopping} onChange={(e) => setNewTopping(e.target.value)} placeholder="Add topping" sx={{ bgcolor: "white", borderRadius: 1 }} />
+                </Grid>
+                <Grid item xs={4}>
+                  <TextField fullWidth label="narx" type="number" variant="outlined" value={newToppingPrice} onChange={(e) => setNewToppingPrice(parseFloat(e.target.value) || "")} placeholder="Price" sx={{ bgcolor: "white", borderRadius: 1 }} />
+                </Grid>
+                <Grid item xs={2}>
+                  <Button variant="contained" sx={{ bgcolor: "green", color: "white" }} onClick={handleAddTopping}>+</Button>
+                </Grid>
+
+                {/* Toppings List */}
+                <Grid item xs={12}>
+                  {newItem.toppings.map((topping, index) => (
+                    <Grid container spacing={1} alignItems="center" key={index}>
+                      <Grid item xs={5}>
+                        <TextField fullWidth value={topping.name} variant="outlined" sx={{ bgcolor: "white", borderRadius: 1 }} disabled />
+                      </Grid>
+                      <Grid item xs={4}>
+                        <TextField fullWidth type="number" value={topping.price} variant="outlined" sx={{ bgcolor: "white", borderRadius: 1 }} disabled />
+                      </Grid>
+                      <Grid item xs={3}>
+                        <Button variant="contained" color="error" onClick={() => handleRemoveTopping(index)}>❌</Button>
+                      </Grid>
+                    </Grid>
+                  ))}
+                </Grid>
+              </>
+            )}
+
+            {/* Price Input */}
+            <Grid item xs={12}>
+              <TextField fullWidth label="narx" type="number" variant="outlined" name="price" value={newItem.price} onChange={handleChange} sx={{ bgcolor: "white", borderRadius: 1 }} />
+            </Grid>
+          </Grid>
+        </Box>
+      </CardContent>
+
+      {/* Action Buttons (Always Visible) */}
+      <Box sx={{ display: "flex", justifyContent: "space-between", p: 2, bgcolor: "#2D3748" }}>
+        <Button fullWidth variant="contained" color="success" sx={{ mr: 1 }} onClick={handleSave} disabled={isUploading}>
+          {isUploading ? "Uploading..." : "Saqlash"}
+        </Button>
+        <Button fullWidth variant="contained" color="error" onClick={onCancel}>
+          Bekor qilish
+        </Button>
+      </Box>
+    </Card>
+  );
 }
 
-export default Crud
+export default Crud;

@@ -1,28 +1,39 @@
-import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink } from "react-router-dom";
+import AddBusinessIcon from "@mui/icons-material/AddBusiness";
+import StoreIcon from "@mui/icons-material/Store";
+import { Box, IconButton, Typography, useMediaQuery } from "@mui/material";
 
-const Navbar = () => {
+export default function Navbar() {
+  // Detect mobile screen (max-width: 600px)
+  const isMobile = useMediaQuery("(max-width:600px)");
+
   return (
-    <div
-      className='w-[5vw] '>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        gap: 4,
+        py: 2,
+        bgcolor: "#1F2937",
+        boxShadow: 2,
+        borderRadius: 2,
+      }}
+    >
+      {/* Add Item */}
+      <NavLink to="/crud" style={{ textDecoration: "none" }}>
+        <IconButton sx={{ color: "white", display: "flex", flexDirection: "column" }}>
+          <AddBusinessIcon sx={{ fontSize: 28 }} />
+          {!isMobile && <Typography variant="caption">Qo'shish</Typography>}
+        </IconButton>
+      </NavLink>
 
-      <div className='flex flex-col gap-2'>
-        <NavLink to={'/itemsShow'}  >
-          Items list
-        </NavLink>
-        <NavLink to={'/storedItems'}>
-          All Items
-        </NavLink>
-        <NavLink to={'/crud'} >
-          Add Items
-        </NavLink>
-        <NavLink to={'/'} >
-          Main
-        </NavLink>
-      </div>
-
-    </div>
-  )
+      {/* All Items */}
+      <NavLink to="/" style={{ textDecoration: "none" }}>
+        <IconButton sx={{ color: "white", display: "flex", flexDirection: "column" }}>
+          <StoreIcon sx={{ fontSize: 28 }} />
+          {!isMobile && <Typography variant="caption">Barchasi</Typography>}
+        </IconButton>
+      </NavLink>
+    </Box>
+  );
 }
-
-export default Navbar

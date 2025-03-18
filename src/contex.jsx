@@ -15,21 +15,24 @@ export const ItemsContext = ({ children }) => {
         try {
             const response = await getFoodItems();
             console.log(response.data);
-            
+
             setItems(response.data);
-            
+
         } catch (error) {
             console.error("Error fetching food items:", error);
         }
     };
 
 
+    const backEndUrl= "http://localhost:5000/api"
 
 
+
+    
 
 
     return (
-        <createItemsContext.Provider value={{ items , setItems }} >
+        <createItemsContext.Provider value={{ items, setItems , backEndUrl }} >
             {children}
         </createItemsContext.Provider>
     )

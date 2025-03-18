@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useCart } from "../contex";
 import SearchBar from "../components/searchbar";
 import EditItem from "../components/EditItem";
+import { Box, Typography, Card, CardMedia, CardContent, Button, Grid, TextField } from "@mui/material";
 
 function ItemsShow() {
-  const { items, setItems } = useCart();
+  const { items, setItems , backEndUrl} = useCart();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
   // console.log(items);
@@ -28,22 +29,26 @@ function ItemsShow() {
 
 
 
+
   const handleSaveChanges = async (id, updatedData) => {
     console.log(selectedItem);
+    console.log("ozgartirilgan malumot ", updatedData);
 
     try {
       if (!selectedItem?._id) {
         console.error("❌ Food item does not have a valid MongoDB _id", selectedItem);
         return;
       }
-      const response = await fetch(`http://localhost:5000/api/food/${selectedItem._id}`, {  // ✅ Use _id
+      const response = await fetch(`${backEndUrl}/food/${selectedItem._id}`, {  // ✅ Use _id
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(updatedData),
-      });
 
+
+      });
+      console.log("Json formatdagi malumot", JSON.stringify(updatedData))
       if (!response.ok) {
         throw new Error("Failed to update item");
       }
@@ -70,11 +75,13 @@ function ItemsShow() {
         prevItems.map((category) => ({
           ...category,
           items: category.items.map((item) =>
-            item._id === selectedItem._id ? { ...item, ...updatedItem.food } : item
+            item._id === selectedItem._id ? { ...item, ...updatedItem.food } : item,
+            console.log('items updated succesfully 111111')
+
           ),
         }))
       );
-      
+
 
 
       setSelectedItem(null);
@@ -94,35 +101,91 @@ function ItemsShow() {
       {
 
 
-        <div className="bg-gray-600 w-[100vw] h-[92.9vh] p-4">
-          <SearchBar value={searchTerm} onChange={handleSearch} placeholder="Search food items..." />
+        <Box sx={{ width: "100vw", height: "92.9vh", bgcolor: "#4B5563", p: 4, overflowY: "auto" }}>
+          {/* Search Bar */}
+          <TextField
+            fullWidth
+            variant="outlined"
+            value={searchTerm}
+            onChange={handleSearch}
+            placeholder="Search food items..."
+            sx={{
+              mb: 3,
+              bgcolor: "white",
+              borderRadius: 1,
+            }}
+          />
 
           {selectedItem ? (
             <EditItem item={selectedItem} onSave={handleSaveChanges} onCancel={() => setSelectedItem(null)} categories={categories} />
           ) : (
             items.map((category) => (
-              <div key={category.id}>
-                <h1 className="text-white text-xl font-bold">{category.title}</h1>
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+              <Box key={category._id} mb={4}>
+                <Typography variant="h5" color="white" fontWeight="bold" mb={2}>
+                  {category.title}
+                </Typography>
+
+                {/* Responsive Grid for Food Items */}
+                <Grid container spacing={3}>
                   {category.items
                     .filter((foodItem) => foodItem.name.toLowerCase().includes(searchTerm))
                     .map((foodItem) => (
-                      <div key={foodItem.id} className="bg-gray-700 px-2 py-3 rounded-lg shadow-lg flex flex-col gap-5">
-                        <div>
-                          <img src={foodItem.image} className="w-[200px]" alt={foodItem.name} />
-                        </div>
-                        <h1 className="text-white">{foodItem.name}</h1>
-                        <h2 className="text-gray-300">${foodItem.price}</h2>
-                        <button className="cursor-pointer bg-sky-500 w-full rounded-2xl text-white py-1" onClick={() => handleEditClick(foodItem)}>
-                          o'zgartirish
-                        </button>
-                      </div>
+                      <Grid item xs={12} sm={6} md={4} lg={2} key={foodItem._id}>
+                        <Card
+                          sx={{
+                            bgcolor: foodItem.isAviable ? "#374151" : "#DC2626",
+                            color: "white",
+                            boxShadow: 3,
+                            borderRadius: 2,
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            textAlign: "center",
+                            p: 2,
+                          }}
+                        >
+                          <CardMedia
+                            component="img"
+                            image={foodItem.image}
+                            alt={foodItem.name}
+                            sx={{ width: "100%", height: 150, objectFit: "cover", borderRadius: 2 }}
+                          />
+
+                          <CardContent sx={{ flexGrow: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                            {/* Truncated Name */}
+                            <Typography
+                              variant="h6"
+                              sx={{
+                                fontSize: "14px",
+                                fontWeight: "bold",
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                width: "100%",
+                              }}
+                            >
+                              {foodItem.name}
+                            </Typography>
+
+                            <Typography variant="body1" color="gray">${foodItem.price}</Typography>
+                          </CardContent>
+
+                          <Button
+                            variant="contained"
+                            fullWidth
+                            sx={{ bgcolor: "#0EA5E9", color: "white", mt: 1, borderRadius: 2 }}
+                            onClick={() => handleEditClick(foodItem)}
+                          >
+                            O'zgartirish
+                          </Button>
+                        </Card>
+                      </Grid>
                     ))}
-                </div>
-              </div>
+                </Grid>
+              </Box>
             ))
           )}
-        </div>
+        </Box>
 
       }
     </>

@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import uploadImageToImgBB from "../imgbb"; // ImgBB upload function
+import { Box, TextField, Button, Card, CardContent, Grid, FormControl, InputLabel, Select, MenuItem, Checkbox, FormControlLabel, Typography } from "@mui/material";
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import { useCart } from "../contex";
 
 function EditItem({ item, onSave, onCancel, categories }) {
     const [editedData, setEditedData] = useState({
@@ -9,9 +12,15 @@ function EditItem({ item, onSave, onCancel, categories }) {
         price: item.price,
         size: item.size || "",
         toppings: item.toppings || [],
+        isAviable: item.isAviable || false
     });
 
+
+const {backEndUrl} =useCart()
+
     const [newTopping, setNewTopping] = useState("");
+    const [newToppingPrice, setNewToppingPrice] = useState("");
+
     const [isUploading, setIsUploading] = useState(false);
 
     const handleChange = (e) => {
@@ -24,23 +33,35 @@ function EditItem({ item, onSave, onCancel, categories }) {
             ...editedData,
             category: selectedCategory,
             size: selectedCategory === "Pizza" ? "" : null,
-            toppings: selectedCategory === "Combo" ? [] : null,
+            toppings: selectedCategory === "Combo" ? [...item.toppings] : null,
         });
     };
 
     const handleAddTopping = () => {
-        if (newTopping.trim() !== "") {
-            setEditedData({ ...editedData, toppings: [...editedData.toppings, newTopping] });
+        if (newTopping.trim() !== "" && newToppingPrice !== "") {
+            setEditedData({
+                ...editedData,
+                toppings: [...editedData.toppings, { name: newTopping, price: parseFloat(newToppingPrice) }]
+            });
             setNewTopping("");
+            setNewToppingPrice("");
         }
     };
 
-    const handleRemoveTopping = (topping) => {
+    const handleEditTopping = (index, field, value) => {
+        const updatedToppings = editedData.toppings.map((topping, i) =>
+            i === index ? { ...topping, [field]: value } : topping
+        );
+
+        setEditedData({ ...editedData, toppings: updatedToppings });
+    };
+    const handleRemoveTopping = (index) => {
         setEditedData({
             ...editedData,
-            toppings: editedData.toppings.filter((t) => t !== topping),
+            toppings: editedData.toppings.filter((_, i) => i !== index),
         });
     };
+
 
     const handleImageUpload = async (event) => {
         const file = event.target.files[0];
@@ -52,7 +73,7 @@ function EditItem({ item, onSave, onCancel, categories }) {
         formData.append("image", file);
 
         try {
-            const response = await fetch("http://localhost:5000/api/food/upload", {
+            const response = await fetch(`${backEndUrl}/food/upload`, {
                 method: "POST",
                 body: formData,
 
@@ -61,7 +82,7 @@ function EditItem({ item, onSave, onCancel, categories }) {
             const data = await response.json();
             if (response.ok) {
                 console.log(data);
-                
+
                 setEditedData({ ...editedData, image: data.image });
             } else {
                 console.error("Image upload failed:", data.message);
@@ -72,123 +93,126 @@ function EditItem({ item, onSave, onCancel, categories }) {
             setIsUploading(false);
         }
     };
+    const handleIsAviable = (e) => {
+        setEditedData({ ...editedData, isAviable: e.target.checked });
+    };
+
 
 
 
     const handleSave = () => {
         const updatedItem = { ...editedData };
+        console.log(editedData);
+
         onSave(item.id, updatedItem);
     };
 
 
     return (
-        <div className="bg-gray-700 p-4 rounded-lg shadow-lg flex flex-col gap-4">
-            <h2 className="text-lg font-bold text-white">Edit Item</h2>
+        <Card sx={{ maxWidth: 500, mx: "auto", my: 4, bgcolor: "#374151", color: "white", boxShadow: 3, borderRadius: 2 }}>
+        <CardContent sx={{ maxHeight: "480px", overflowY: "auto", paddingBottom: 2 }}>
+            <Typography variant="h5" align="center" fontWeight="bold" gutterBottom>
+                Edit Item
+            </Typography>
 
-            {/* Name Input */}
-            <div className="flex">
-                <label className="block text-white">Name:</label>
-                <input
-                    type="text"
-                    name="name"
-                    value={editedData.name}
-                    onChange={handleChange}
-                    className="w-full p-2 border border-gray-400 rounded-lg"
-                />
+            <Box component="form" noValidate autoComplete="off">
+                <Grid container spacing={2}>
+                    {/* Name Input */}
+                    <Grid item xs={12}>
+                        <TextField fullWidth label="Name" variant="outlined" name="name" value={editedData.name} onChange={handleChange} sx={{ bgcolor: "white", borderRadius: 1 }} />
+                    </Grid>
 
-                {/* Image Upload & Preview */}
-                <label className="block text-white">Image:</label>
-                {editedData.imageUrl && (
-                    <img src={editedData.imageUrl} alt="Preview" className="w-32 h-32 object-cover rounded-lg" />
-                )}
-                <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="w-full p-2 border border-gray-400 rounded-lg bg-white"
-                />
-                {isUploading && <p className="text-yellow-400">Uploading...</p>}
+                    {/* Image Upload */}
+                    <Grid item xs={12} className="flex flex-col items-center">
+                        <label htmlFor="upload-file">
+                            <Button variant="contained" component="span" sx={{ bgcolor: "primary.main", display: "flex", alignItems: "center", gap: 1 }}>
+                                <AddPhotoAlternateIcon />
+                                Upload Image
+                            </Button>
+                        </label>
+                        <input type="file" accept="image/*" id="upload-file" hidden onChange={handleImageUpload} />
 
-                {/* Category Selection */}
-                <label className="block text-white">Category:</label>
-                <select
-                    name="category"
-                    value={editedData.category}
-                    onChange={handleCategoryChange}
-                    className="w-full p-2 border border-gray-400 rounded-lg"
-                >
-                    {categories.map((cat) => (
-                        <option key={cat} value={cat}>
-                            {cat}
-                        </option>
-                    ))}
-                </select>
+                        {editedData.image && (
+                            <img src={editedData.image} alt="Preview" className="w-32 h-32 mt-2 object-cover rounded-lg" />
+                        )}
+                    </Grid>
 
-                {/* Pizza: Size Input */}
-                {editedData.category === "Pizza" && (
-                    <>
-                        <label className="block text-white">Size:</label>
-                        <input
-                            type="text"
-                            name="size"
-                            value={editedData.size}
-                            onChange={handleChange}
-                            className="w-full p-2 border border-gray-400 rounded-lg"
-                            placeholder="Enter pizza size (e.g., Small, Medium, Large)"
-                        />
-                    </>
-                )}
+                    {/* Category Selection */}
+                    <Grid item xs={12}>
+                        <FormControl fullWidth sx={{ bgcolor: "white", borderRadius: 1 }}>
+                            <InputLabel>Category</InputLabel>
+                            <Select name="category" value={editedData.category} onChange={handleCategoryChange}>
+                                {categories.map((cat) => (
+                                    <MenuItem key={cat} value={cat}>
+                                        {cat}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
-                {/* Combo: Toppings Input */}
-                {editedData.category === "Combo" && (
-                    <>
-                        <label className="block text-white">Toppings:</label>
-                        <div className="flex gap-2">
-                            <input
-                                type="text"
-                                value={newTopping}
-                                onChange={(e) => setNewTopping(e.target.value)}
-                                className="w-full p-2 border border-gray-400 rounded-lg"
-                                placeholder="Add topping"
-                            />
-                            <button className="bg-green-500 text-white px-4 py-2 rounded-lg" onClick={handleAddTopping}>
-                                +
-                            </button>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                            {editedData.toppings.map((topping, index) => (
-                                <div key={index} className="bg-gray-500 text-white px-3 py-1 rounded-lg flex items-center">
-                                    {topping}
-                                    <button className="ml-2 text-red-500" onClick={() => handleRemoveTopping(topping)}>
-                                        ✕
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    </>
-                )}
+                    {/* Pizza: Size Input */}
+                    {editedData.category === "Pizza" && (
+                        <Grid item xs={12}>
+                            <TextField fullWidth label="Size" variant="outlined" name="size" value={editedData.size} onChange={handleChange} placeholder="Enter pizza size (e.g., Small, Medium, Large)" sx={{ bgcolor: "white", borderRadius: 1 }} />
+                        </Grid>
+                    )}
 
-                {/* Price Input */}
-                <label className="block text-white">Price:</label>
-                <input
-                    type="number"
-                    name="price"
-                    value={editedData.price}
-                    onChange={handleChange}
-                    className="w-full p-2 border border-gray-400 rounded-lg"
-                />
+                    {/* Combo: Toppings Input */}
+                    {editedData.category === "Combo" && (
+                        <>
+                            <Grid item xs={6}>
+                                <TextField fullWidth label="Topping" variant="outlined" value={newTopping} onChange={(e) => setNewTopping(e.target.value)} placeholder="Add topping" sx={{ bgcolor: "white", borderRadius: 1 }} />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <TextField fullWidth label="Price" type="number" variant="outlined" value={newToppingPrice} onChange={(e) => setNewToppingPrice(parseFloat(e.target.value) || "")} placeholder="Price" sx={{ bgcolor: "white", borderRadius: 1 }} />
+                            </Grid>
+                            <Grid item xs={2}>
+                                <Button variant="contained" sx={{ bgcolor: "green", color: "white" }} onClick={handleAddTopping}>+</Button>
+                            </Grid>
 
-                {/* Action Buttons */}
-                <div className="flex justify-between mt-4">
-                    <button className="bg-green-500 text-white px-4 py-2 rounded-lg" onClick={handleSave} disabled={isUploading}>
-                        {isUploading ? "Uploading..." : "Save"}
-                    </button>
-                    <button className="bg-red-500 text-white px-4 py-2 rounded-lg" onClick={onCancel}>
-                        Cancel
-                    </button>
-                </div>
-            </div>
-        </div>
+                            {/* Toppings List */}
+                            <Grid item xs={12}>
+                                {editedData.toppings.map((topping, index) => (
+                                    <Grid container spacing={1} alignItems="center" key={index}>
+                                        <Grid item xs={5}>
+                                            <TextField fullWidth value={topping.name} onChange={(e) => handleEditTopping(index, "name", e.target.value)} variant="outlined" sx={{ bgcolor: "white", borderRadius: 1 }} />
+                                        </Grid>
+                                        <Grid item xs={4}>
+                                            <TextField fullWidth type="number" value={topping.price} onChange={(e) => handleEditTopping(index, "price", e.target.value)} variant="outlined" sx={{ bgcolor: "white", borderRadius: 1 }} />
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <Button variant="contained" color="error" onClick={() => handleRemoveTopping(index)}>❌</Button>
+                                        </Grid>
+                                    </Grid>
+                                ))}
+                            </Grid>
+                        </>
+                    )}
+
+                    {/* Availability Checkbox */}
+                    <Grid item xs={12}>
+                        <FormControlLabel control={<Checkbox checked={editedData.isAviable} onChange={handleIsAviable} />} label="Available" />
+                    </Grid>
+
+                    {/* Price Input */}
+                    <Grid item xs={12}>
+                        <TextField fullWidth label="Price" type="number" variant="outlined" name="price" value={editedData.price} onChange={handleChange} sx={{ bgcolor: "white", borderRadius: 1 }} />
+                    </Grid>
+                </Grid>
+            </Box>
+        </CardContent>
+
+        {/* Action Buttons (Always Visible) */}
+        <Box sx={{ display: "flex", justifyContent: "space-between", p: 2, bgcolor: "#2D3748" }}>
+            <Button fullWidth variant="contained" color="success" sx={{ mr: 1 }} onClick={handleSave} disabled={isUploading}>
+                {isUploading ? "Uploading..." : "Save"}
+            </Button>
+            <Button fullWidth variant="contained" color="error" onClick={onCancel}>
+                Cancel
+            </Button>
+        </Box>
+    </Card>
     );
 }
 

@@ -8,7 +8,6 @@ function Layout() {
         <div>
             <Header />
             <div className='flex'>
-                <Navbar />
                 <Outlet />
 
 
