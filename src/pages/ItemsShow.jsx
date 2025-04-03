@@ -5,14 +5,16 @@ import EditItem from "../components/EditItem";
 import { Box, Typography, Card, CardMedia, CardContent, Button, Grid, TextField } from "@mui/material";
 
 function ItemsShow() {
-  const { items, setItems , backEndUrl} = useCart();
+  const { items, setItems, backEndUrl } = useCart();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
-  // console.log(items);
+  console.log(items , "bu");
 
 
-  const categories = ["Pizza", "Burger", "Drinks", "Desserts", "Other", "Combo"];
-  console.log("Updating Item:", selectedItem);
+  const categories = items.categories
+  console.log(categories);
+  
+  // console.log("Updating Item:", selectedItem);
 
 
   const handleSearch = (e) => {
@@ -31,8 +33,8 @@ function ItemsShow() {
 
 
   const handleSaveChanges = async (id, updatedData) => {
-    console.log(selectedItem);
-    console.log("ozgartirilgan malumot ", updatedData);
+    // console.log(selectedItem);
+    // console.log("ozgartirilgan malumot ", updatedData);
 
     try {
       if (!selectedItem?._id) {
@@ -68,7 +70,8 @@ function ItemsShow() {
       //       : category
       //   )
       // );
-      console.log('mavjud itemlar', items);
+      // console.log('mavjud itemlar', items);
+      console.log("back enddan kelgan ",updatedItem);
 
 
       setItems((prevItems) =>

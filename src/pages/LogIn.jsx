@@ -22,6 +22,7 @@ function Login() {
             localStorage.setItem("token", response.data.token); // Store JWT token
             navigate("/crud"); // Redirect to admin panel
         } catch (err) {
+            console.log(err)
             setError("Invalid username or password!");
         }
     };

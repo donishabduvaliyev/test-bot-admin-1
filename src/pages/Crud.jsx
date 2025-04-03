@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useCart } from '../contex';
 import { Box, TextField, Button, Card, CardContent, Grid, FormControl, InputLabel, Select, MenuItem, Checkbox, FormControlLabel, Typography } from "@mui/material";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+// import EditCategory from '../components/EditCategory';
 
 function Crud() {  // Accept `categories` as a prop
   const [newItem, setNewItem] = useState({
@@ -10,15 +11,22 @@ function Crud() {  // Accept `categories` as a prop
     category: '',
     price: '',
     isAviable: false,
-    sizes: '',
+    sizes: [],
     toppings: [],
+    combo: []
+
   });
 
-  const { items, setitems , backEndUrl } = useCart()
+  const { items, setitems, backEndUrl } = useCart()
   const [newTopping, setNewTopping] = useState("");
   const [newToppingPrice, setNewToppingPrice] = useState("");
+  const [newAddition, setNewAddition] = useState("")
+  const [newAdditionPrice, setNewAdditionPrice] = useState("")
   const [isUploading, setIsUploading] = useState(false);
   const categories = ["Pizza", "Burger", "Drinks", "Desserts", "Other", "Combo"];
+  const [comboItem, setComboItem] = useState("")
+  const [comboItemPrice, setComboItemPrice] = useState("")
+
 
 
 
@@ -29,6 +37,24 @@ function Crud() {  // Accept `categories` as a prop
   const handleCategoryChange = (e) => {
     setNewItem({ ...newItem, category: e.target.value, toppings: [] });
   };
+
+  // const handleAddCombo = () => {
+  //   if (comboItem.trim() !== "" && comboItemPrice !== "") {
+  //     setNewItem({
+  //       ...newItem,
+  //       combo: [...newItem.combo, { name: comboItem, price: parseFloat(comboItemPrice) }]
+  //     });
+  //     setComboItem("");
+  //     setComboItemPrice("");
+  //   }
+  // };
+
+  // const handleRemoveCombo = (index) => {
+  //   setNewItem({
+  //     ...newItem,
+  //     combo: newItem.combo.filter((_, i) => i !== index),
+  //   });
+  // };
 
   const handleAddTopping = () => {
     if (newTopping.trim() !== "" && newToppingPrice !== "") {
@@ -41,6 +67,23 @@ function Crud() {  // Accept `categories` as a prop
     }
   };
 
+  const handleAddAddition = () => {
+    if (newAddition.trim() !== "" && newAdditionPrice !== "") {
+      setNewItem({
+        ...newItem,
+        sizes: [...newItem.sizes, { name: newAddition, price: parseFloat(newAdditionPrice) }]
+      });
+      setNewAddition("");
+      setNewAdditionPrice("");
+    }
+  };
+
+  const handleRemoveAddition = (index) => {
+    setNewItem({
+      ...newItem,
+      sizes: newItem.sizes.filter((_, i) => i !== index),
+    });
+  };
   const handleRemoveTopping = (index) => {
     setNewItem({
       ...newItem,
@@ -135,113 +178,179 @@ function Crud() {  // Accept `categories` as a prop
       category: '',
       price: '',
       isAviable: '',
-      sizes: '',
+      sizes: [],
       toppings: [],
     });
   };
 
   return (
-    <Card sx={{ maxWidth: 500, mx: "auto", my: 4, bgcolor: "#374151", color: "white", boxShadow: 3, borderRadius: 2 }}
-   
-    >
-      <CardContent sx={{ maxHeight: "500px", overflowY: "auto", paddingBottom: 2 }}>
-        <Typography variant="h5" align="center" fontWeight="bold" gutterBottom>
-          Mahsulot qo'shish
-        </Typography>
+    <>
+      <Card sx={{ maxWidth: 500, mx: "auto", my: 4, bgcolor: "#374151", color: "white", boxShadow: 3, borderRadius: 2 }}
 
-        <Box component="form" noValidate autoComplete="off">
-          <Grid container spacing={2}>
-            {/* Name Input */}
-            <Grid item xs={12}>
-              <TextField fullWidth label="Mahsulot nomi" variant="outlined" name="name" value={newItem.name} onChange={handleChange} sx={{ bgcolor: "white", borderRadius: 1 }} />
-            </Grid>
+      >
+        <CardContent sx={{ maxHeight: "500px", overflowY: "auto", paddingBottom: 2 }}>
+          <Typography variant="h5" align="center" fontWeight="bold" gutterBottom>
+            Mahsulot qo'shish
+          </Typography>
 
-            {/* Image Upload */}
-            <Grid item xs={10} className="flex flex-col items-center">
-              <label htmlFor="upload-file">
-                <Button variant="contained" component="span" sx={{ bgcolor: "primary.main", display: "flex", alignItems: "center", gap: 1 }}>
-                  <AddPhotoAlternateIcon />
-                  Rasm yuklash
-                </Button>
-              </label>
-              <input type="file" accept="image/*" id="upload-file" hidden onChange={handleImageUpload} />
-
-              {newItem.image && (
-                <img src={newItem.image} alt="rasm" className="w-40 h-40 mt-2 object-cover rounded-lg" />
-              )}
-            </Grid>
-
-            {/* Category Selection */}
-            <Grid item xs={12}>
-              <FormControl fullWidth sx={{ bgcolor: "white", borderRadius: 1 }}>
-                <InputLabel>Kategoriya</InputLabel>
-                <Select name="Kategoriya" value={newItem.category} onChange={handleCategoryChange}>
-                  {categories.map((cat) => (
-                    <MenuItem key={cat} value={cat}>
-                      {cat}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-
-            {/* Pizza: Size Input */}
-            {newItem.category === "Pizza" && (
+          <Box component="form" noValidate autoComplete="off">
+            <Grid container spacing={2}>
+              {/* Name Input */}
               <Grid item xs={12}>
-                <TextField fullWidth label="O'lcham" variant="outlined" name="sizes" value={newItem.sizes} onChange={handleChange} placeholder="Enter pizza size (e.g., Small, Medium, Large)" sx={{ bgcolor: "white", borderRadius: 1 }} />
+                <TextField fullWidth label="Mahsulot nomi" variant="outlined" name="name" value={newItem.name} onChange={handleChange} sx={{ bgcolor: "white", borderRadius: 1 }} />
               </Grid>
-            )}
 
-            {/* Combo: Toppings Input */}
-            {newItem.category === "Combo" && (
+              {/* Image Upload */}
+              <Grid item xs={10} className="flex flex-col items-center">
+                <label htmlFor="upload-file">
+                  <Button variant="contained" component="span" sx={{ bgcolor: "primary.main", display: "flex", alignItems: "center", gap: 1 }}>
+                    <AddPhotoAlternateIcon />
+                    Rasm yuklash
+                  </Button>
+                </label>
+                <input type="file" accept="image/*" id="upload-file" hidden onChange={handleImageUpload} />
+
+                {newItem.image && (
+                  <img src={newItem.image} alt="rasm" className="w-40 h-40 mt-2 object-cover rounded-lg" />
+                )}
+              </Grid>
+
+              {/* Category Selection */}
+              <Grid item xs={12}>
+                <FormControl fullWidth sx={{ bgcolor: "white", borderRadius: 1 }}>
+                  <InputLabel>Kategoriya</InputLabel>
+                  <Select name="Kategoriya" value={newItem.category} onChange={handleCategoryChange}>
+                    {categories.map((cat) => (
+                      <MenuItem key={cat} value={cat}>
+                        {cat}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              {/* Pizza: Size Input */}
+
+              {/* {
+          newItem.category !== 'Combo' ? */}
               <>
-                <Grid item xs={6}>
-                  <TextField fullWidth label="qo'shimcha" variant="outlined" value={newTopping} onChange={(e) => setNewTopping(e.target.value)} placeholder="Add topping" sx={{ bgcolor: "white", borderRadius: 1 }} />
-                </Grid>
-                <Grid item xs={4}>
-                  <TextField fullWidth label="narx" type="number" variant="outlined" value={newToppingPrice} onChange={(e) => setNewToppingPrice(parseFloat(e.target.value) || "")} placeholder="Price" sx={{ bgcolor: "white", borderRadius: 1 }} />
-                </Grid>
-                <Grid item xs={2}>
-                  <Button variant="contained" sx={{ bgcolor: "green", color: "white" }} onClick={handleAddTopping}>+</Button>
-                </Grid>
+                <div className='bg-red-300 contents '>
+                  <Grid item xs={6}>
+                    <TextField fullWidth label="Variantlar" variant="outlined" value={newAddition} onChange={(e) => setNewAddition(e.target.value)} placeholder="Add variant" sx={{ bgcolor: "white", borderRadius: 1 }} />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <TextField fullWidth label="narx" type="number" variant="outlined" value={newAdditionPrice} onChange={(e) => setNewAdditionPrice(parseFloat(e.target.value) || "")} placeholder="Price" sx={{ bgcolor: "white", borderRadius: 1 }} />
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Button variant="contained" sx={{ bgcolor: "green", color: "white" }} onClick={handleAddAddition}>+</Button>
+                  </Grid>
 
-                {/* Toppings List */}
-                <Grid item xs={12}>
-                  {newItem.toppings.map((topping, index) => (
-                    <Grid container spacing={1} alignItems="center" key={index}>
-                      <Grid item xs={5}>
-                        <TextField fullWidth value={topping.name} variant="outlined" sx={{ bgcolor: "white", borderRadius: 1 }} disabled />
+
+                  <Grid item xs={12}>
+                    {newItem.sizes.map((variant, index) => (
+                      <Grid container spacing={1} alignItems="center" key={index}>
+                        <Grid item xs={5}>
+                          <TextField fullWidth value={variant.name} variant="outlined" sx={{ bgcolor: "white", borderRadius: 1 }} disabled />
+                        </Grid>
+                        <Grid item xs={4}>
+                          <TextField fullWidth type="number" value={variant.price} variant="outlined" sx={{ bgcolor: "white", borderRadius: 1 }} disabled />
+                        </Grid>
+                        <Grid item xs={3}>
+                          <Button variant="contained" color="error" onClick={() => handleRemoveAddition(index)}>❌</Button>
+                        </Grid>
                       </Grid>
-                      <Grid item xs={4}>
-                        <TextField fullWidth type="number" value={topping.price} variant="outlined" sx={{ bgcolor: "white", borderRadius: 1 }} disabled />
+                    ))}
+                  </Grid>
+                </div>
+
+
+
+
+                <div className='  contents bg-green-200  '>
+                  <Grid item xs={6}>
+                    <TextField fullWidth label="qo'shimcha" variant="outlined" value={newTopping} onChange={(e) => setNewTopping(e.target.value)} placeholder="Add topping" sx={{ bgcolor: "white", borderRadius: 1 }} />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <TextField fullWidth label="narx" type="number" variant="outlined" value={newToppingPrice} onChange={(e) => setNewToppingPrice(parseFloat(e.target.value) || "")} placeholder="Price" sx={{ bgcolor: "white", borderRadius: 1 }} />
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Button variant="contained" sx={{ bgcolor: "green", color: "white" }} onClick={handleAddTopping}>+</Button>
+                  </Grid>
+
+                  {/* Toppings List */}
+                  <Grid item xs={12}>
+                    {newItem.toppings.map((topping, index) => (
+                      <Grid container spacing={1} alignItems="center" key={index}>
+                        <Grid item xs={5}>
+                          <TextField fullWidth value={topping.name} variant="outlined" sx={{ bgcolor: "white", borderRadius: 1 }} disabled />
+                        </Grid>
+                        <Grid item xs={4}>
+                          <TextField fullWidth type="number" value={topping.price} variant="outlined" sx={{ bgcolor: "white", borderRadius: 1 }} disabled />
+                        </Grid>
+                        <Grid item xs={3}>
+                          <Button variant="contained" color="error" onClick={() => handleRemoveTopping(index)}>❌</Button>
+                        </Grid>
                       </Grid>
-                      <Grid item xs={3}>
-                        <Button variant="contained" color="error" onClick={() => handleRemoveTopping(index)}>❌</Button>
-                      </Grid>
-                    </Grid>
-                  ))}
-                </Grid>
+                    ))}
+                  </Grid>
+                </div>
+
               </>
-            )}
+              {/* <>
+              <Grid item xs={6}>
+                <TextField fullWidth label="combo" variant="outlined" value={comboItem} onChange={(e) => setComboItem (e.target.value)} placeholder="mahsulot qo'sh" sx={{ bgcolor: "white", borderRadius: 1 }} />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField fullWidth label="narx" type="number" variant="outlined" value={comboItemPrice} onChange={(e) => setComboItemPrice(parseFloat(e.target.value) || "")} placeholder="Price" sx={{ bgcolor: "white", borderRadius: 1 }} />
+              </Grid>
+              <Grid item xs={2}>
+                <Button variant="contained" sx={{ bgcolor: "green", color: "white" }} onClick={handleAddCombo}>+</Button>
+              </Grid>
 
-            {/* Price Input */}
-            <Grid item xs={12}>
-              <TextField fullWidth label="narx" type="number" variant="outlined" name="price" value={newItem.price} onChange={handleChange} sx={{ bgcolor: "white", borderRadius: 1 }} />
+            
+              <Grid item xs={12}>
+                {newItem.combo.map((item, index) => (
+                  <Grid container spacing={1} alignItems="center" key={index}>
+                    <Grid item xs={5}>
+                      <TextField fullWidth value={item.name} variant="outlined" sx={{ bgcolor: "white", borderRadius: 1 }} disabled />
+                    </Grid>
+                    <Grid item xs={4}>
+                      <TextField fullWidth type="number" value={item.price} variant="outlined" sx={{ bgcolor: "white", borderRadius: 1 }} disabled />
+                    </Grid>
+                    <Grid item xs={3}>
+                      <Button variant="contained" color="error" onClick={() => handleRemoveCombo(index)}>❌</Button>
+                    </Grid>
+                  </Grid>
+                ))}
+              </Grid>
+
+              <div>
+
+              </div>
+            </> */}
+
+
+
+              {/* Price Input */}
+              <Grid item xs={12}>
+                <TextField fullWidth label="narx" type="number" variant="outlined" name="price" value={newItem.price} onChange={handleChange} sx={{ bgcolor: "white", borderRadius: 1 }} />
+              </Grid>
             </Grid>
-          </Grid>
-        </Box>
-      </CardContent>
+          </Box>
+        </CardContent>
 
-      {/* Action Buttons (Always Visible) */}
-      <Box sx={{ display: "flex", justifyContent: "space-between", p: 2, bgcolor: "#2D3748" }}>
-        <Button fullWidth variant="contained" color="success" sx={{ mr: 1 }} onClick={handleSave} disabled={isUploading}>
-          {isUploading ? "Uploading..." : "Saqlash"}
-        </Button>
-        <Button fullWidth variant="contained" color="error" onClick={onCancel}>
-          Bekor qilish
-        </Button>
-      </Box>
-    </Card>
+        {/* Action Buttons (Always Visible) */}
+        <Box sx={{ display: "flex", justifyContent: "space-between", p: 2, bgcolor: "#2D3748" }}>
+          <Button fullWidth variant="contained" color="success" sx={{ mr: 1 }} onClick={handleSave} disabled={isUploading}>
+            {isUploading ? "Uploading..." : "Saqlash"}
+          </Button>
+          <Button fullWidth variant="contained" color="error" onClick={onCancel}>
+            Bekor qilish
+          </Button>
+        </Box>
+      </Card>
+      {/* <EditCategory items={items} /> */}
+    </>
   );
 }
 

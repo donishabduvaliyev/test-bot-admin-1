@@ -16,7 +16,7 @@ export const ItemsContext = ({ children }) => {
             const response = await getFoodItems();
             console.log(response.data);
 
-            setItems(response.data);
+            setItems(response.data.foods);
 
         } catch (error) {
             console.error("Error fetching food items:", error);
@@ -25,6 +25,7 @@ export const ItemsContext = ({ children }) => {
 
 
     const backEndUrl= "http://localhost:5000/api"
+console.log(items);
 
 
 
