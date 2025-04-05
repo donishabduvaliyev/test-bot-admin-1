@@ -24,16 +24,16 @@ export const ItemsContext = ({ children }) => {
     };
 
 
-    const backEndUrl= "http://localhost:5000/api"
-console.log(items);
+    const backEndUrl = "https://test-admin-server-unrz.onrender.com/api"
+    console.log(items);
 
 
 
-    
+
 
 
     return (
-        <createItemsContext.Provider value={{ items, setItems , backEndUrl }} >
+        <createItemsContext.Provider value={{ items, setItems, backEndUrl }} >
             {children}
         </createItemsContext.Provider>
     )
