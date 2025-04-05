@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api"; // Change to your backend URL when deployed
+const API_URL = "https://test-admin-server-unrz.onrender.com/api"; // Change to your backend URL when deployed
 
 export const addFoodItem = async (formData) => {
   return await axios.post(`${API_URL}/food/add`, formData);
