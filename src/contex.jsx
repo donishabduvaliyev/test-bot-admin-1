@@ -28,6 +28,9 @@ export const ItemsContext = ({ children }) => {
     console.log(items);
 
 
+    axios.post("https://test-admin-server-unrz.onrender.com/api/food/login", data, {
+        withCredentials: true
+    });
 
 
 
