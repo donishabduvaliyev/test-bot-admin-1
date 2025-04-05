@@ -4,16 +4,16 @@ import SearchBar from "../components/searchbar";
 import EditItem from "../components/EditItem";
 import { Box, Typography, Card, CardMedia, CardContent, Button, Grid, TextField } from "@mui/material";
 
-function ItemsShow() {
+async function ItemsShow() {
   const { items, setItems, backEndUrl } = useCart();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
-  console.log(items , "bu");
+  console.log(items, "bu");
 
 
   const categories = items.categories
   console.log(categories);
-  
+
   // console.log("Updating Item:", selectedItem);
 
 
@@ -28,6 +28,15 @@ function ItemsShow() {
     setSelectedItem(item)
   };
 
+
+
+  const token = localStorage.getItem("token");
+
+  const res = await axios.get(`${backEndUrl}/food`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
 
 
 
@@ -71,7 +80,7 @@ function ItemsShow() {
       //   )
       // );
       // console.log('mavjud itemlar', items);
-      console.log("back enddan kelgan ",updatedItem);
+      console.log("back enddan kelgan ", updatedItem);
 
 
       setItems((prevItems) =>

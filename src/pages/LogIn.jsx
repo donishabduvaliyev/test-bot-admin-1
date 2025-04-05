@@ -18,6 +18,7 @@ function Login() {
                 username,
                 password,
             });
+            console.log("You succesfully logged in");
 
             localStorage.setItem("token", response.data.token); // Store JWT token
             navigate("/crud"); // Redirect to admin panel
