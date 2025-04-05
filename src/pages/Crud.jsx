@@ -4,7 +4,7 @@ import { Box, TextField, Button, Card, CardContent, Grid, FormControl, InputLabe
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 // import EditCategory from '../components/EditCategory';
 
-function Crud() {  // Accept `categories` as a prop
+async function Crud() {  // Accept `categories` as a prop
   const [newItem, setNewItem] = useState({
     name: '',
     image: '',
@@ -28,6 +28,14 @@ function Crud() {  // Accept `categories` as a prop
   const [comboItemPrice, setComboItemPrice] = useState("")
 
 
+
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${backEndUrl}/food`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
 
   const handleChange = (e) => {

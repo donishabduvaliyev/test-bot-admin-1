@@ -14,7 +14,7 @@ import { useCart } from "../contex";
 
 const daysOfWeek = ["Dushanba", "Seshanba", "Chorshanba", "Payshanba", "Juma", "Shanba", "Yakshanba"];
 
-const StoredItems = () => {
+const StoredItems = async () => {
   const [schedule, setSchedule] = useState({});
   const [isEmergencyOff, setIsEmergencyOff] = useState(false);
   const { backEndUrl } = useCart();
@@ -48,6 +48,15 @@ const StoredItems = () => {
       .then(() => alert("Schedule updated successfully!"))
       .catch((error) => alert("Failed to update schedule."));
   };
+
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${backEndUrl}/food`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
 
   return (
     <Container maxWidth="sm">

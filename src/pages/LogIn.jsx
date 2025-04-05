@@ -19,7 +19,7 @@ function Login() {
                 password,
             });
             console.log("You succesfully logged in");
-
+            localStorage.setItem("isAuthenticated", "true");
             localStorage.setItem("token", response.data.token); // Store JWT token
             navigate("/crud"); // Redirect to admin panel
         } catch (err) {

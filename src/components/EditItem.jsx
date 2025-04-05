@@ -4,7 +4,7 @@ import { Box, TextField, Button, Card, CardContent, Grid, FormControl, InputLabe
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useCart } from "../contex";
 
-function EditItem({ item, onSave, onCancel, categories }) {
+async function EditItem({ item, onSave, onCancel, categories }) {
     const [editedData, setEditedData] = useState({
         name: item.name,
         image: item.image, 
@@ -26,6 +26,15 @@ function EditItem({ item, onSave, onCancel, categories }) {
     const [newEditedSizePrice, setNewEditedSizePrice] = useState("")
 
 
+
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(`${backEndUrl}/food`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  
 
     const handleChange = (e) => {
         setEditedData({ ...editedData, [e.target.name]: e.target.value });

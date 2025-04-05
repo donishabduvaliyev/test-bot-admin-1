@@ -4,7 +4,7 @@ import { getFoodItems } from "../api";
 
 const createItemsContext = createContext()
 
-export const ItemsContext = ({ children }) => {
+export const ItemsContext = async ({ children }) => {
     const [items, setItems] = useState([])
 
     useEffect(() => {
@@ -27,6 +27,14 @@ export const ItemsContext = ({ children }) => {
     const backEndUrl = "https://test-admin-server-unrz.onrender.com/api"
     console.log(items);
 
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(`${backEndUrl}/food`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  
 
     // axios.post("https://test-admin-server-unrz.onrender.com/api/food/login", data, {
     //     withCredentials: true

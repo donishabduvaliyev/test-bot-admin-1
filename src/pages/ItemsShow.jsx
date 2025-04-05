@@ -30,14 +30,15 @@ async function ItemsShow() {
 
 
 
+  
+
   const token = localStorage.getItem("token");
 
-  const res = await axios.get(`${backEndUrl}/food`, {
+  const res = await fetch(`${backEndUrl}/food`, {
     headers: {
-      Authorization: `Bearer ${token}`
-    }
+      Authorization: `Bearer ${token}`,
+    },
   });
-
 
 
 

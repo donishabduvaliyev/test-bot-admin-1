@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useCart } from "../contex";
 
-function ChangeCredentials() {
+async function ChangeCredentials() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
@@ -26,6 +26,15 @@ function ChangeCredentials() {
             alert("Error updating credentials");
         }
     };
+
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(`${backEndUrl}/food`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  
 
     return (
         <Container maxWidth="sm">
