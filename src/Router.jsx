@@ -10,12 +10,21 @@ import Broadcast from "./pages/Broadcast";
 
 // Function to check if user is authenticated
 const isAuthenticated = () => {
-    return localStorage.getItem("isAuthenticated") === "true";
+    const authFlag = localStorage.getItem("isAuthenticated") === "true";
+    // Log what the flag value is initially
+    console.log('isAuthenticated check - localStorage value:', localStorage.getItem("isAuthenticated"), 'Result:', authFlag);
+    return authFlag;
 };
 
-// Private Route Wrapper
 const PrivateRoute = ({ element }) => {
-    return isAuthenticated() ? element : <Navigate to="/login" />;
+    const authenticated = isAuthenticated();
+    // Log the result passed to PrivateRoute
+    console.log('PrivateRoute check - authenticated:', authenticated);
+    if (!authenticated) {
+        // Log if navigation should happen
+        console.log('PrivateRoute: Navigating to /login');
+    }
+    return authenticated ? element : <Navigate to="/login" />;
 };
 
 function RouterPage() {
