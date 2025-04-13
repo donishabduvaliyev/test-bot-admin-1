@@ -29,13 +29,13 @@ async function Crud() {  // Accept `categories` as a prop
 
 
 
-  const token = localStorage.getItem("token");
+  // const token = localStorage.getItem("token");
 
-  const res = await fetch(`${backEndUrl}/food`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  // const res = await fetch(`${backEndUrl}/food`, {
+  //   headers: {
+  //     Authorization: `Bearer ${token}`,
+  //   },
+  // });
 
 
   const handleChange = (e) => {

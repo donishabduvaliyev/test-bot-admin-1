@@ -52,13 +52,13 @@ async function Broadcast() {
             alert("Failed to send message.");
         }
     };
-    const token = localStorage.getItem("token");
+    // const token = localStorage.getItem("token");
 
-    const res = await fetch(`${backEndUrl}/food`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    // const res = await fetch(`${backEndUrl}/food`, {
+    //   headers: {
+    //     Authorization: `Bearer ${token}`,
+    //   },
+    // });
   
 
     return (

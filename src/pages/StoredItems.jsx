@@ -49,13 +49,13 @@ const StoredItems = async () => {
       .catch((error) => alert("Failed to update schedule."));
   };
 
-  const token = localStorage.getItem("token");
+  // const token = localStorage.getItem("token");
 
-  const res = await fetch(`${backEndUrl}/food`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  // const res = await fetch(`${backEndUrl}/food`, {
+  //   headers: {
+  //     Authorization: `Bearer ${token}`,
+  //   },
+  // });
 
 
   return (

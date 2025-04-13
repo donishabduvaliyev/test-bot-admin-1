@@ -32,13 +32,13 @@ async function ItemsShow() {
 
   
 
-  const token = localStorage.getItem("token");
+  // const token = localStorage.getItem("token");
 
-  const res = await fetch(`${backEndUrl}/food`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  // const res = await fetch(`${backEndUrl}/food`, {
+  //   headers: {
+  //     Authorization: `Bearer ${token}`,
+  //   },
+  // });
 
 
 
