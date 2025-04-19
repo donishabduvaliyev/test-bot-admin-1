@@ -8,11 +8,11 @@ async function ItemsShow() {
   const { items, setItems, backEndUrl } = useCart();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
-  console.log(items, "bu");
+  // console.log(items, "bu");
 
 
   const categories = items.categories
-  console.log(categories);
+  // console.log(categories);
 
   // console.log("Updating Item:", selectedItem);
 

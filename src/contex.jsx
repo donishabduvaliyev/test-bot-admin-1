@@ -1,34 +1,33 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
-import { getFoodItems } from "../api";
- const useItemsContext = createContext();
+
+const ItemsContextObj = createContext();
 
 export const ItemsContext = ({ children }) => {
-  const [items, setItems] = useState([]);
-  const backEndUrl = "https://test-admin-server-unrz.onrender.com/api";
-//   const token = localStorage.getItem("token");
+    const [items, setItems] = useState([]);
+    const backEndUrl = "https://test-admin-server-unrz.onrender.com/api";
 
-useEffect(() => {
-    const fetchFoodItems = async () => {
-      try {
-        const response = await axios.get(`${backEndUrl}/food`);
-        setItems(response.data); // Ensure backend returns `foods`
-        console.log("Fetched items:", response.data);
-      } catch (error) {
-        console.error("Error fetching food items:", error);
-      }
-    };
+    useEffect(() => {
+        const fetchFoodItems = async () => {
+            try {
+                const response = await axios.get(`${backEndUrl}/food`);
+                setItems(response.data);
+                console.log("Fetched items:", response.data);
+            } catch (error) {
+                console.error("Error fetching food items:", error);
+            }
+        };
 
-    fetchFoodItems();
-  }, []);
+        fetchFoodItems();
+    }, []);
 
-  return (
-    <useItemsContext.Provider value={{ items, setItems, backEndUrl }}>
-      {children}
-    </useItemsContext.Provider>
-  );
+    return (
+        <ItemsContextObj.Provider value={{ items, setItems, backEndUrl }}>
+            {children}
+        </ItemsContextObj.Provider>
+    );
 };
 
 export const useCart = () => {
-  return useContext(useItemsContext);
+    return useContext(ItemsContextObj);
 };
