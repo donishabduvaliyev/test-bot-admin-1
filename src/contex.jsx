@@ -30,9 +30,9 @@ export const ItemsContext = async ({ children }) => {
     const token = localStorage.getItem("token");
 
     const res = await fetch(`${backEndUrl}/food`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    //   headers: {
+    //     Authorization: `Bearer ${token}`,
+    //   },
     });
   
 
