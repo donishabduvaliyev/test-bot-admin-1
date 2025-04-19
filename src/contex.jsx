@@ -8,15 +8,12 @@ export const ItemsContext = ({ children }) => {
   const backEndUrl = "https://test-admin-server-unrz.onrender.com/api";
 //   const token = localStorage.getItem("token");
 
-  useEffect(() => {
+useEffect(() => {
     const fetchFoodItems = async () => {
       try {
-        const response = await getFoodItems();
+        const response = await axios.get(`${backEndUrl}/food`);
+        setItems(response.data); // Ensure backend returns `foods`
         console.log("Fetched items:", response.data);
-        // If response is an array directly:
-        setItems(response.data); 
-        // If response is { foods: [...] }:
-        // setItems(response.data.foods); 
       } catch (error) {
         console.error("Error fetching food items:", error);
       }
