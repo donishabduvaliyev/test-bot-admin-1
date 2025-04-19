@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import uploadImageToImgBB from "../imgbb"; // ImgBB upload function
+import uploadImageToImgBB from "../imgbb";
 import { Box, TextField, Button, Card, CardContent, Grid, FormControl, InputLabel, Select, MenuItem, Checkbox, FormControlLabel, Typography } from "@mui/material";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useCart } from "../contex";
