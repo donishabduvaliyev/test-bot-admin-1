@@ -20,6 +20,8 @@ export const ItemsContext = ({ children }) => {
 
         fetchFoodItems();
     }, []);
+  
+
 
     return (
         <ItemsContextObj.Provider value={{ items, setItems, backEndUrl }}>
