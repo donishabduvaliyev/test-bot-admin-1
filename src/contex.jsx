@@ -33,6 +33,6 @@ export const ItemsProvider = ({ children }) => {
   );
 };
 
-export const useItems = () => {
+export const useCart = () => {
   return useContext(ItemsContext);
 };
