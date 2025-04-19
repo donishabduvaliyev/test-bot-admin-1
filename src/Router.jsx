@@ -7,6 +7,7 @@ import Layout from "./Layout/Layout";
 import Login from "./pages/LogIn";
 import ChangeCredentials from "./pages/changeAccount";
 import Broadcast from "./pages/Broadcast";
+import  Dashboard  from "./pages/dashboard";
 
 // Function to check if user is authenticated
 // const isAuthenticated = () => {
@@ -35,6 +36,7 @@ function RouterPage() {
 
             {/* Protected Routes */}
             <Route path="/" element={<Layout />}>
+                <Route path="dashboard" element={<Dashboard />} />
                 <Route index element={<ItemsShow />}  />
                 <Route path="crud" element={<Crud />}  />
                 <Route path="changeBot" element={<StoredItems />}  />

@@ -1,26 +1,29 @@
 import React, { useState } from "react";
 import {
+    Grid,
     Card,
     CardContent,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-import {
+    Typography,
     Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-} from "@/components/ui/tabs";
+    Tab,
+    Box,
+} from "@mui/material";
 import {
-    LineChart,
-    Line,
-    XAxis,
-    YAxis,
-    Tooltip,
+    ShoppingCart,
+    AttachMoney,
+    DeliveryDining,
+    LocalShipping,
+    Route,
+    People,
+} from "@mui/icons-material";
+import {
     ResponsiveContainer,
-    CartesianGrid,
     AreaChart,
     Area,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
 } from "recharts";
 
 const sampleData = {
@@ -86,94 +89,80 @@ const sampleData = {
     },
 };
 
+const cardItems = [
+    { label: "Total Orders", key: "orders", icon: <ShoppingCart /> },
+    { label: "Total Price ($)", key: "price", icon: <AttachMoney /> },
+    { label: "Delivery Orders", key: "deliveryOrders", icon: <DeliveryDining /> },
+    { label: "Delivery Price ($)", key: "deliveryPrice", icon: <LocalShipping /> },
+    { label: "Delivery Distance (km)", key: "deliveryDistance", icon: <Route /> },
+    { label: "Total Users", key: "users", icon: <People /> },
+];
+
 const Dashboard = () => {
     const [period, setPeriod] = useState("today");
     const data = sampleData[period];
 
     return (
-        <div className="p-4 space-y-6">
-            <Tabs value={period} onValueChange={setPeriod} className="w-full">
-                <TabsList className="flex flex-wrap gap-2 justify-center">
-                    <TabsTrigger value="today">Today</TabsTrigger>
-                    <TabsTrigger value="week">Week</TabsTrigger>
-                    <TabsTrigger value="month">Month</TabsTrigger>
-                    <TabsTrigger value="year">Year</TabsTrigger>
-                </TabsList>
+        <Box sx={{ padding: 2 }}>
+            <Tabs
+                value={period}
+                onChange={(e, newValue) => setPeriod(newValue)}
+                centered
+                variant="scrollable"
+                scrollButtons
+                allowScrollButtonsMobile
+            >
+                <Tab label="Today" value="today" />
+                <Tab label="Week" value="week" />
+                <Tab label="Month" value="month" />
+                <Tab label="Year" value="year" />
             </Tabs>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Total Orders</CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-2xl font-bold">{data.orders}</CardContent>
-                </Card>
+            <Grid container spacing={2} sx={{ mt: 2 }}>
+                {cardItems.map((item) => (
+                    <Grid item xs={12} sm={6} md={4} lg={4} xl={3} key={item.key}>
+                        <Card sx={{ display: "flex", alignItems: "center", p: 2 }}>
+                            <Box sx={{ mr: 2 }}>{item.icon}</Box>
+                            <CardContent>
+                                <Typography variant="body2" color="text.secondary">
+                                    {item.label}
+                                </Typography>
+                                <Typography variant="h6">{data[item.key]}</Typography>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                ))}
+            </Grid>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Total Price ($)</CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-2xl font-bold">{data.price}</CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Delivery Orders</CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-2xl font-bold">{data.deliveryOrders}</CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Delivery Price ($)</CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-2xl font-bold">{data.deliveryPrice}</CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Delivery Distance (km)</CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-2xl font-bold">{data.deliveryDistance}</CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Total Users</CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-2xl font-bold">{data.users}</CardContent>
-                </Card>
-            </div>
-
-            <Card className="w-full">
-                <CardHeader>
-                    <CardTitle className="text-lg">Orders & Revenue Trend</CardTitle>
-                </CardHeader>
+            <Card sx={{ mt: 4 }}>
                 <CardContent>
-                    <ResponsiveContainer width="100%" height={320}>
-                        <AreaChart data={data.chart} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                    <Typography variant="h6" gutterBottom>
+                        Orders & Revenue Trend
+                    </Typography>
+                    <ResponsiveContainer width="100%" height={300}>
+                        <AreaChart data={data.chart}>
                             <defs>
                                 <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.8} />
-                                    <stop offset="95%" stopColor="#4f46e5" stopOpacity={0} />
+                                    <stop offset="5%" stopColor="#1976d2" stopOpacity={0.8} />
+                                    <stop offset="95%" stopColor="#1976d2" stopOpacity={0} />
                                 </linearGradient>
                             </defs>
-                            <XAxis dataKey="date" stroke="#888" />
-                            <YAxis stroke="#888" />
+                            <XAxis dataKey="date" stroke="#666" />
+                            <YAxis stroke="#666" />
                             <CartesianGrid strokeDasharray="3 3" />
                             <Tooltip />
                             <Area
                                 type="monotone"
                                 dataKey="total"
-                                stroke="#4f46e5"
-                                fillOpacity={1}
+                                stroke="#1976d2"
                                 fill="url(#colorTotal)"
+                                fillOpacity={1}
                             />
                         </AreaChart>
                     </ResponsiveContainer>
                 </CardContent>
             </Card>
-        </div>
+        </Box>
     );
 };
 
