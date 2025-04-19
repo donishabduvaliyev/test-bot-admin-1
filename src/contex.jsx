@@ -1,59 +1,38 @@
 import axios from "axios";
-import { Children, createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { getFoodItems } from "../api";
 
-const createItemsContext = createContext()
+const ItemsContext = createContext();
 
-export const ItemsContext = async ({ children }) => {
-    const [items, setItems] = useState([])
+export const ItemsProvider = ({ children }) => {
+  const [items, setItems] = useState([]);
+  const backEndUrl = "https://test-admin-server-unrz.onrender.com/api";
+//   const token = localStorage.getItem("token");
 
-    useEffect(() => {
-        fetchFoodItems();
-    }, []);
-
+  useEffect(() => {
     const fetchFoodItems = async () => {
-        try {
-            const response = await getFoodItems();
-            console.log(response.data);
-
-            setItems(response.data.foods);
-
-        } catch (error) {
-            console.error("Error fetching food items:", error);
-        }
+      try {
+        const response = await getFoodItems();
+        console.log("Fetched items:", response.data);
+        // If response is an array directly:
+        setItems(response.data); 
+        // If response is { foods: [...] }:
+        // setItems(response.data.foods); 
+      } catch (error) {
+        console.error("Error fetching food items:", error);
+      }
     };
 
+    fetchFoodItems();
+  }, []);
 
-    const backEndUrl = "https://test-admin-server-unrz.onrender.com/api"
-    console.log(items);
+  return (
+    <ItemsContext.Provider value={{ items, setItems, backEndUrl }}>
+      {children}
+    </ItemsContext.Provider>
+  );
+};
 
-    const token = localStorage.getItem("token");
-
-    const res = await fetch(`${backEndUrl}/food`, {
-    //   headers: {
-    //     Authorization: `Bearer ${token}`,
-    //   },
-    });
-  
-
-    // axios.post("https://test-admin-server-unrz.onrender.com/api/food/login", data, {
-    //     withCredentials: true
-    // });
-
-
-
-
-    return (
-        <createItemsContext.Provider value={{ items, setItems, backEndUrl }} >
-            {children}
-        </createItemsContext.Provider>
-    )
-
-
-}
-
-
-export const useCart = () => {
-    return useContext(createItemsContext)
-
-}
+export const useItems = () => {
+  return useContext(ItemsContext);
+};
