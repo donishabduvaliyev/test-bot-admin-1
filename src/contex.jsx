@@ -1,10 +1,9 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import { getFoodItems } from "../api";
+ const useItemsContext = createContext();
 
-const ItemsContext = createContext();
-
-export const ItemsProvider = ({ children }) => {
+export const ItemsContext = ({ children }) => {
   const [items, setItems] = useState([]);
   const backEndUrl = "https://test-admin-server-unrz.onrender.com/api";
 //   const token = localStorage.getItem("token");
@@ -27,12 +26,12 @@ export const ItemsProvider = ({ children }) => {
   }, []);
 
   return (
-    <ItemsContext.Provider value={{ items, setItems, backEndUrl }}>
+    <useItemsContext.Provider value={{ items, setItems, backEndUrl }}>
       {children}
-    </ItemsContext.Provider>
+    </useItemsContext.Provider>
   );
 };
 
 export const useCart = () => {
-  return useContext(ItemsContext);
+  return useContext(useItemsContext);
 };
