@@ -29,11 +29,7 @@ async function EditItem({ item, onSave, onCancel, categories }) {
 
     const token = localStorage.getItem("token");
 
-    const res = await fetch(`${backEndUrl}/food`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const res = await fetch(`${backEndUrl}/food`);
   
 
     const handleChange = (e) => {
