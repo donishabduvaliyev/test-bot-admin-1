@@ -3,8 +3,7 @@ import { useCart } from "../contex";
 import SearchBar from "../components/searchbar";
 import EditItem from "../components/EditItem";
 import { Box, Typography, Card, CardMedia, CardContent, Button, Grid, TextField } from "@mui/material";
-
-async function ItemsShow() {
+function ItemsShow() {
   const { items, setItems, backEndUrl } = useCart();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);

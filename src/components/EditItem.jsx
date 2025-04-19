@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import uploadImageToImgBB from "../imgbb";
 import { Box, TextField, Button, Card, CardContent, Grid, FormControl, InputLabel, Select, MenuItem, Checkbox, FormControlLabel, Typography } from "@mui/material";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useCart } from "../contex";
 
-async function EditItem({ item, onSave, onCancel, categories }) {
+function EditItem({ item, onSave, onCancel, categories }) {
     const [editedData, setEditedData] = useState({
         name: item.name,
-        image: item.image, 
+        image: item.image,
         category: item.category,
         price: item.price,
         sizes: item.sizes || [],
@@ -27,10 +27,22 @@ async function EditItem({ item, onSave, onCancel, categories }) {
 
 
 
-    const token = localStorage.getItem("token");
+    // const token = localStorage.getItem("token");
 
-    const res = await fetch(`${backEndUrl}/food`);
-  
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await fetch(`${backEndUrl}/food`);
+                const data = await res.json();
+                console.log("Fetched food data in EditItem:", data);
+            } catch (err) {
+                console.error("Failed to fetch in EditItem:", err);
+            }
+        };
+        fetchData();
+    }, [backEndUrl]);
+
+
 
     const handleChange = (e) => {
         setEditedData({ ...editedData, [e.target.name]: e.target.value });
@@ -41,7 +53,7 @@ async function EditItem({ item, onSave, onCancel, categories }) {
         setEditedData({
             ...editedData,
             category: selectedCategory,
-          
+
         });
     };
 
