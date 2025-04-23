@@ -4,7 +4,7 @@ import { useCart } from "../contex";
 import { TextField, Button, Card, CardContent, Typography, CircularProgress } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
-async function Broadcast() {
+function Broadcast() {
     const [title, setTitle] = useState("");
     const [message, setMessage] = useState("");
     const [image, setImage] = useState(null);
@@ -59,7 +59,7 @@ async function Broadcast() {
     //     Authorization: `Bearer ${token}`,
     //   },
     // });
-  
+
 
     return (
         <Card sx={{ maxWidth: 500, margin: "auto", padding: 2, mt: 3 }}>

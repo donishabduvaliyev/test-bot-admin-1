@@ -4,11 +4,11 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useCart } from "../contex";
 
-async function ChangeCredentials() {
+function ChangeCredentials() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
-    const {backEndUrl}= useCart()
+    const { backEndUrl } = useCart()
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -29,12 +29,22 @@ async function ChangeCredentials() {
 
     const token = localStorage.getItem("token");
 
-    const res = await fetch(`${backEndUrl}/food`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  
+
+    useEffect(() => {
+
+        const fetchData = async () => {
+            const res = await fetch(`${backEndUrl}/food`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+        }
+fetchData()
+
+    }, []);
+
+
+
 
     return (
         <Container maxWidth="sm">

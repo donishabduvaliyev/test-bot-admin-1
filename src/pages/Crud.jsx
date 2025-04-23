@@ -4,7 +4,7 @@ import { Box, TextField, Button, Card, CardContent, Grid, FormControl, InputLabe
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 // import EditCategory from '../components/EditCategory';
 
-async function Crud() {  // Accept `categories` as a prop
+function Crud() {  // Accept `categories` as a prop
   const [newItem, setNewItem] = useState({
     name: '',
     image: '',
