@@ -36,8 +36,8 @@ function RouterPage() {
 
             {/* Protected Routes */}
             <Route path="/" element={<Layout />}>
-                <Route path="dashboard" element={<Dashboard />} />
-                <Route index element={<ItemsShow />}  />
+                <Route index element={<Dashboard />} />
+                <Route path="items" element={<ItemsShow />}  />
                 <Route path="crud" element={<Crud />}  />
                 <Route path="changeBot" element={<StoredItems />}  />
                 <Route path="broadcast" element={<Broadcast />} />

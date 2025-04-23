@@ -14,9 +14,10 @@ export default function Navbar() {
 
   const links = [
     { to: "/crud", icon: <AddBusinessIcon />, label: "Qo'shish" },
-    { to: "/", icon: <StoreIcon />, label: "Barchasi" },
+    { to: "/", icon: <StoreIcon />, label: "Dashboard" },
     { to: "/changeBot", icon: <TelegramIcon />, label: "Bot" },
     { to: "/broadcast", icon: <RateReviewIcon />, label: "Xabar" },
+    { to: "/items", icon: <RateReviewIcon />, label: "barchasi" },
   ];
 
   return (
