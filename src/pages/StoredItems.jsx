@@ -14,7 +14,7 @@ import { useCart } from "../contex";
 
 const daysOfWeek = ["Dushanba", "Seshanba", "Chorshanba", "Payshanba", "Juma", "Shanba", "Yakshanba"];
 
-const StoredItems = async () => {
+const StoredItems =  () => {
   const [schedule, setSchedule] = useState({});
   const [isEmergencyOff, setIsEmergencyOff] = useState(false);
   const { backEndUrl } = useCart();
