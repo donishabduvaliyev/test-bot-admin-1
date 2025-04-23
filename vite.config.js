@@ -7,4 +7,7 @@ export default defineConfig({
   plugins: [react() ,
     tailwindcss()
   ],
+  server: {
+    historyApiFallback: true, // 👈 this handles nested route refreshes
+  }
 })
