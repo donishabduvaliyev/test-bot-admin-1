@@ -202,9 +202,9 @@ function Crud() {  // Accept `categories` as a prop
           </Typography>
 
           <Box component="form" noValidate autoComplete="off">
-            <Grid container spacing={2}>
+            <Grid container spacing={2} display={"flex"} flexDirection={"column"}>
               {/* Name Input */}
-              <Grid item xs={12}>
+              <Grid item xs={12} >
                 <TextField fullWidth label="Mahsulot nomi" variant="outlined" name="name" value={newItem.name} onChange={handleChange} sx={{ bgcolor: "white", borderRadius: 1 }} />
               </Grid>
 
