@@ -157,7 +157,7 @@ function Crud() {  // Accept `categories` as a prop
 
       console.log("Sending Data:", foodData); // 🔥 Debugging
 
-      const response = await fetch("http://localhost:5000/api/food/add", {
+      const response = await fetch(`${backEndUrl}/food/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" }, // ✅ Set JSON headers
         body: JSON.stringify(foodData), // ✅ Convert object to JSON string
