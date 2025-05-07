@@ -7,9 +7,9 @@ import {
     Tabs,
     Tab,
     Box,
-    Button, // Added Button for manual update
-    CircularProgress, // Added for loading state
-    Alert, // Added for error messages
+    Button, 
+    CircularProgress, 
+    Alert, 
 } from "@mui/material";
 import {
     ShoppingCart,
@@ -18,7 +18,7 @@ import {
     LocalShipping,
     Route,
     People,
-    Refresh as RefreshIcon, // Added for update button
+    Refresh as RefreshIcon, 
 } from "@mui/icons-material";
 import {
     ResponsiveContainer,
@@ -30,16 +30,13 @@ import {
     Tooltip,
 } from "recharts";
 
-// --- Configuration ---
-// IMPORTANT: Replace this with the actual URL of your deployed Admin Server API
-const API_BASE_URL = 'https://test-admin-server-ls4z.onrender.com'; // Example: 'https://your-admin-server.onrender.com'
+const API_BASE_URL = 'https://test-admin-server-ls4z.onrender.com';
 const ANALYTICS_ENDPOINT = `${API_BASE_URL}/api/analytics/dashboardAnalytics`;
 const UPDATE_ANALYTICS_ENDPOINT = `${API_BASE_URL}/api/analytics/updateAnalytics`;
 
-// If your API requires an API key, set it here. Otherwise, leave as null or an empty string.
-const API_KEY = null; // Example: 'YOUR_API_KEY_IF_NEEDED';
 
-// --- Sample Data (Fallback) ---
+const API_KEY = null;
+
 const sampleData = {
     today: {
         orders: 15, price: 2300000, deliveryOrders: 8, deliveryPrice: 1200000,
@@ -76,19 +73,24 @@ const sampleData = {
             { date: "Jan", total: 50000000 }, { date: "Feb", total: 64000000 },
             { date: "Mar", total: 72000000 }, { date: "Apr", total: 81000000 },
             { date: "May", total: 94000000 }, { date: "Jun", total: 86000000 },
-            // Add more months for a full year if available
+  
+            { date: "Jul", total: 95000000 }, { date: "Aug", total: 102000000 },
+            { date: "Sep", total: 110000000 }, { date: "Oct", total: 120000000 },
+            { date: "Nov", total: 130000000 }, { date: "Dec", total: 140000000 },
+
+            
         ],
     },
 };
 
 // --- Card Configuration ---
 const cardItems = [
-    { label: "Total Orders", key: "orders", icon: <ShoppingCart fontSize="large" /> },
-    { label: "Total Revenue", key: "price", icon: <AttachMoney fontSize="large" />, format: "currency" },
-    { label: "Unique Users", key: "users", icon: <People fontSize="large" /> },
-    { label: "Delivery Orders", key: "deliveryOrders", icon: <DeliveryDining fontSize="large" /> },
-    { label: "Delivery Revenue", key: "deliveryPrice", icon: <LocalShipping fontSize="large" />, format: "currency" },
-    { label: "Delivery Distance (km)", key: "deliveryDistance", icon: <Route fontSize="large" />, suffix: " km" },
+    { label: "Umumiy buyurtmalar", key: "orders", icon: <ShoppingCart fontSize="large" /> },
+    { label: "Umumiy mablag'", key: "price", icon: <AttachMoney fontSize="large" />, format: "currency" },
+    { label: "Mijozlar soni", key: "users", icon: <People fontSize="large" /> },
+    { label: "Yetkazib berish", key: "deliveryOrders", icon: <DeliveryDining fontSize="large" /> },
+    { label: "Yetkazib berishdagi mablag'", key: "deliveryPrice", icon: <LocalShipping fontSize="large" />, format: "currency" },
+    { label: "Yetkazib berish masofasi (km)", key: "deliveryDistance", icon: <Route fontSize="large" />, suffix: " km" },
 ];
 
 // --- Helper to format price ---
@@ -108,14 +110,14 @@ const Dashboard = () => {
     const [updateStatus, setUpdateStatus] = useState('');
 
     const fetchAnalyticsData = useCallback(async (isManualUpdate = false) => {
-        if (!isManualUpdate) setLoading(true); // Only show full page loading on initial load
+        if (!isManualUpdate) setLoading(true); 
         setError(null);
-        if (isManualUpdate) setUpdateStatus('Fetching latest data...');
+        if (isManualUpdate) setUpdateStatus("Eng so'ngi malumot yuklanmoqda...");
 
         try {
             const headers = { 'Content-Type': 'application/json' };
             if (API_KEY) {
-                headers['X-API-Key'] = API_KEY; // Or your specific API key header
+                headers['X-API-Key'] = API_KEY; 
             }
 
             const response = await fetch(ANALYTICS_ENDPOINT, { method: 'GET', headers });
@@ -126,25 +128,25 @@ const Dashboard = () => {
             }
             const data = await response.json();
 
-            if (data && Object.keys(data).length > 0 && data.today) { // Basic check if data seems valid
+            if (data && Object.keys(data).length > 0 && data.today) { 
                 setAnalyticsData(data);
-                if (isManualUpdate) setUpdateStatus('Data refreshed successfully!');
+                if (isManualUpdate) setUpdateStatus('Malumotlar muvaffaqqiyatli yangilandi!');
             } else {
                 console.warn("Fetched data is empty or invalid, using fallback sample data.");
-                setAnalyticsData(sampleData); // Fallback to sample data if fetched data is not good
-                if (isManualUpdate) setUpdateStatus('Fetched data was empty, using sample data.');
+                setAnalyticsData(sampleData); 
+                if (isManualUpdate) setUpdateStatus('Kelgan malumotlar bosh, iltimos server malumotlarini tekshiring.');
             }
 
         } catch (err) {
             console.error('Error fetching analytics data:', err);
             setError(err.message);
-            setAnalyticsData(sampleData); // Fallback to sample data on error
-            if (isManualUpdate) setUpdateStatus(`Failed to refresh data: ${err.message}`);
+            setAnalyticsData(sampleData); 
+            if (isManualUpdate) setUpdateStatus(`Malumotni yuklashda xato: ${err.message}`);
         } finally {
             if (!isManualUpdate) setLoading(false);
             if (isManualUpdate) {
                 setTimeout(() => {
-                    setUpdateStatus(''); // Clear status after a few seconds
+                    setUpdateStatus(''); 
                 }, 4000);
             }
         }
@@ -156,7 +158,7 @@ const Dashboard = () => {
 
     const handleUpdateAnalytics = async () => {
         setIsUpdating(true);
-        setUpdateStatus('Requesting analytics update...');
+        setUpdateStatus('Malumotlarni yuklash kutilmoqda...');
         setError(null);
 
         try {
@@ -171,19 +173,19 @@ const Dashboard = () => {
             if (!response.ok) {
                 throw new Error(responseData.message || `HTTP error! status: ${response.status}`);
             }
-            setUpdateStatus(`Update process initiated: ${responseData.message}. Refreshing data shortly...`);
-            setTimeout(() => fetchAnalyticsData(true), 2000); // Fetch new data after a short delay
+            setUpdateStatus(`Yuklanish yakunlandi: ${responseData.message}. Qisqa malumotlar yangilanmoqda...`);
+            setTimeout(() => fetchAnalyticsData(true), 2000); 
 
         } catch (err) {
             console.error('Error triggering analytics update:', err);
-            setUpdateStatus(`Update request failed: ${err.message}`);
+            setUpdateStatus(`Yangilashda xatolik: ${err.message}`);
             setError(err.message);
         } finally {
             setIsUpdating(false);
         }
     };
 
-    // Determine current data for the selected period, falling back to sample if needed
+    
     const currentPeriodData = (analyticsData && analyticsData[period]) ? analyticsData[period] : sampleData[period];
     const currentChartData = (currentPeriodData && Array.isArray(currentPeriodData.chart)) ? currentPeriodData.chart : [];
 
@@ -192,16 +194,21 @@ const Dashboard = () => {
         return (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
                 <CircularProgress />
-                <Typography sx={{ ml: 2 }}>Loading Analytics...</Typography>
+                <Typography sx={{ ml: 2 }}>Analitika yuklanmoqda...</Typography>
             </Box>
         );
     }
 
     return (
-        <Box sx={{ padding: { xs: 1, sm: 2, md: 3 }, backgroundColor: '#f4f6f8', minHeight: '100vh' }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap' }}>
+        <Box sx={{ 
+            padding: { xs: 1, sm: 2, md: 3 }, 
+            backgroundColor: '#f4f6f8', 
+            minHeight: '100vh',
+            overflowX: 'hidden' 
+        }}>
+            <Box sx={{ display: 'flex', flexDirection: "column", justifyContent: 'center', alignItems: 'start', mb: 2 }}>
                 <Typography variant="h4" component="h1" sx={{ mb: { xs: 2, sm: 0 } }}>
-                    Dashboard
+                    ANALITIKA
                 </Typography>
                 <Button
                     variant="contained"
@@ -209,99 +216,127 @@ const Dashboard = () => {
                     onClick={handleUpdateAnalytics}
                     disabled={isUpdating}
                 >
-                    {isUpdating ? "Updating..." : "Update Analytics"}
+                    {isUpdating ? "Yuklanmoqda..." : "Malumotlarni yangilash"}
                 </Button>
             </Box>
+        
             {updateStatus && (
                 <Alert severity={error && updateStatus.includes("failed") ? "error" : "info"} sx={{ mb: 2 }}>
                     {updateStatus}
                 </Alert>
             )}
-            {error && !updateStatus.includes("failed") && ( // Show general error if not covered by updateStatus
+            {error && !updateStatus.includes("failed") && (
                 <Alert severity="error" sx={{ mb: 2 }}>
                     Error loading data: {error}
                 </Alert>
             )}
-
-
-            <Tabs
-                value={period}
-                onChange={(e, newValue) => setPeriod(newValue)}
-                centered
-                variant="scrollable"
-                scrollButtons
-                allowScrollButtonsMobile
-                sx={{ backgroundColor: 'white', borderRadius: 1, mb: 3, boxShadow: 1 }}
-            >
-                <Tab label="Today" value="today" />
-                <Tab label="This Week" value="week" />
-                <Tab label="This Month" value="month" />
-                <Tab label="This Year" value="year" />
-            </Tabs>
-
-            <Grid container spacing={3}>
-                {cardItems.map((item) => {
-                    let value = currentPeriodData[item.key];
-                    if (value === undefined || value === null) {
-                        value = "N/A";
-                    } else if (item.format === "currency") {
-                        value = formatPrice(value);
-                    } else if (item.suffix) {
-                        value = `${value}${item.suffix}`;
-                    }
-                    return (
-                        <Grid item xs={12} sm={6} md={4} lg={2} key={item.key}> {/* Adjusted lg for 6 items */}
-                            <Card sx={{ display: "flex", alignItems: "center", p: 2, height: '100%', transition: 'box-shadow 0.3s', '&:hover': { boxShadow: 3 } }}>
-                                <Box sx={{ mr: 2, color: 'primary.main' }}>{item.icon}</Box>
-                                <CardContent sx={{ p: 1, '&:last-child': { pb: 1 } }}> {/* Reduced padding */}
-                                    <Typography variant="body2" color="text.secondary" noWrap>
-                                        {item.label}
-                                    </Typography>
-                                    <Typography variant="h5" component="div" fontWeight="bold">{value}</Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                    );
-                })}
-            </Grid>
-
+        
+         
+            <Box sx={{ maxWidth: '100%', overflowX: 'auto' }}>
+                <Tabs
+                    value={period}
+                    onChange={(e, newValue) => setPeriod(newValue)}
+                    variant="scrollable"
+                    scrollButtons
+                    allowScrollButtonsMobile
+                    sx={{ 
+                        backgroundColor: 'white', 
+                        borderRadius: 1, 
+                        mb: 3, 
+                        boxShadow: 1, 
+                        minWidth: 'max-content'
+                    }}
+                >
+                    <Tab label="Bugun" value="today" />
+                    <Tab label="Shu xafta" value="week" />
+                    <Tab label="Shu oy" value="month" />
+                    <Tab label="Shu yil" value="year" />
+                </Tabs>
+            </Box>
+    
+            <Box sx={{ width: '100%', overflowX: 'hidden' }}>
+                <Grid container spacing={1}>
+                    {cardItems.map((item) => {
+                        let value = currentPeriodData[item.key];
+                        if (value === undefined || value === null) {
+                            value = "N/A";
+                        } else if (item.format === "currency") {
+                            value = formatPrice(value);
+                        } else if (item.suffix) {
+                            value = `${value}${item.suffix}`;
+                        }
+        
+                        return (
+                            <Grid item xs={12} sm={6} md={4} lg={2} key={item.key}>
+                                <Card sx={{ 
+                                    display: "flex", 
+                                    flexDirection: 'row',  
+                                    alignItems: "center", 
+                                    p: 2, 
+                                    height: '100%', 
+                                    transition: 'box-shadow 0.3s', 
+                                    '&:hover': { boxShadow: 3 } 
+                                }}>
+                                    <Box sx={{ mr: 2, color: 'primary.main', flexShrink: 0 }}>
+                                        {item.icon}
+                                    </Box>
+                                    <CardContent sx={{ p: 1, '&:last-child': { pb: 1 } }}>
+                                        <Typography variant="body2" color="text.secondary" noWrap>
+                                            {item.label}
+                                        </Typography>
+                                        <Typography variant="h5" component="div" fontWeight="bold">{value}</Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        );
+                    })}
+                </Grid>
+            </Box>
+        
             <Card sx={{ mt: 4, boxShadow: 1 }}>
                 <CardContent>
                     <Typography variant="h6" gutterBottom>
-                        Revenue Trend ({period.charAt(0).toUpperCase() + period.slice(1)})
+                        Mablag' aylanmasi ({period.charAt(0).toUpperCase() + period.slice(1)})
                     </Typography>
                     {currentChartData.length > 0 ? (
-                        <ResponsiveContainer width="100%" height={350}>
-                            <AreaChart data={currentChartData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}> {/* Adjusted margins */}
-                                <defs>
-                                    <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#1976d2" stopOpacity={0.8} />
-                                        <stop offset="95%" stopColor="#1976d2" stopOpacity={0.1} />
-                                    </linearGradient>
-                                </defs>
-                                <XAxis dataKey="date" stroke="#666" tick={{ fontSize: 12 }} />
-                                <YAxis stroke="#666" tick={{ fontSize: 12 }} tickFormatter={(value) => new Intl.NumberFormat('en-US', { notation: 'compact', compactDisplay: 'short' }).format(value)} />
-                                <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-                                <Tooltip formatter={(value) => formatPrice(value)} />
-                                <Area
-                                    type="monotone"
-                                    dataKey="total"
-                                    stroke="#1976d2"
-                                    strokeWidth={2}
-                                    fill="url(#colorTotal)"
-                                    fillOpacity={1}
-                                    activeDot={{ r: 6, strokeWidth: 2, fill: '#fff' }}
-                                />
-                            </AreaChart>
-                        </ResponsiveContainer>
+                        <Box sx={{ width: '100%', overflowX: 'auto' }}>
+                            <ResponsiveContainer width="100%" height={350}>
+                                <AreaChart data={currentChartData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
+                                    <defs>
+                                        <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#1976d2" stopOpacity={0.8} />
+                                            <stop offset="95%" stopColor="#1976d2" stopOpacity={0.1} />
+                                        </linearGradient>
+                                    </defs>
+                                    <XAxis dataKey="date" stroke="#666" tick={{ fontSize: 12 }} />
+                                    <YAxis stroke="#666" tick={{ fontSize: 12 }} tickFormatter={(value) =>
+                                        new Intl.NumberFormat('en-US', {
+                                            notation: 'compact',
+                                            compactDisplay: 'short'
+                                        }).format(value)} />
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                                    <Tooltip formatter={(value) => formatPrice(value)} />
+                                    <Area
+                                        type="monotone"
+                                        dataKey="total"
+                                        stroke="#1976d2"
+                                        strokeWidth={2}
+                                        fill="url(#colorTotal)"
+                                        fillOpacity={1}
+                                        activeDot={{ r: 6, strokeWidth: 2, fill: '#fff' }}
+                                    />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                        </Box>
                     ) : (
                         <Typography sx={{ textAlign: 'center', color: 'text.secondary', mt: 4 }}>
-                            No chart data available for this period.
+                            Tanlangan sana bo'yicha hech qanday Grafik yo'q.
                         </Typography>
                     )}
                 </CardContent>
             </Card>
         </Box>
+        
     );
 };
 
