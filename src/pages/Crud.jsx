@@ -149,18 +149,18 @@ function Crud() {  // Accept `categories` as a prop
         name: newItem.name,
         price: newItem.price,
         category: newItem.category,
-        sizes: newItem.sizes || [], // Ensure it's an array
-        toppings: newItem.toppings || [], // Ensure it's an array
-        image: newItem.image, // Cloudinary URL
-        isAvailable: newItem.isAviable
+        sizes: newItem.sizes || [], 
+        toppings: newItem.toppings || [], 
+        image: newItem.image, 
+        isAvailable: false
       };
 
-      console.log("Sending Data:", foodData); // 🔥 Debugging
+      console.log("Sending Data:", foodData);
 
       const response = await fetch(`${backEndUrl}/food/add`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" }, // ✅ Set JSON headers
-        body: JSON.stringify(foodData), // ✅ Convert object to JSON string
+        headers: { "Content-Type": "application/json" }, 
+        body: JSON.stringify(foodData),
       });
 
       const data = await response.json();
